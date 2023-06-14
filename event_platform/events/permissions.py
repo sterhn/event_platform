@@ -1,21 +1,23 @@
 from rest_framework import permissions
 from users.models import UserProfile
 
-
-class IsAdminOrReadOnly(permissions.BasePermission):
+class IsEventPlannerOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in permissions.SAFE_METHODS:
+            # Allow GET, HEAD, OPTIONS requests to all users
             return True
 
-        return bool(request.user and request.user.is_staff)
-    
-class IsEventPlanner(permissions.BasePermission):
-    def has_permission(self, request, view):
-        user = request.user
-        user_profile = UserProfile.objects.get(user=user)
-
-        if user.is_authenticated and user_profile.role == 'event_planner':
-            return True
-        else:
-            print(user_profile.role)
+        if not request.user.is_authenticated:
+            # Deny all other requests if user is not authenticated
             return False
+
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            if user_profile.role == 'event_planner':
+                # Allow edit requests only for event planners
+                return True
+        except UserProfile.DoesNotExist:
+            pass
+
+        # Deny all other requests
+        return False

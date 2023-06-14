@@ -35,7 +35,7 @@ class RegisterView(APIView):
         user_profile.name = user.username
         user_profile.save()
         token.save()
-        return Response({'token': token.key, 'role': user.profile.role}, status=status.HTTP_201_CREATED)
+        return Response({'token': token.key, 'role': user_profile.role}, status=status.HTTP_201_CREATED)
 
 
 class LoginView(APIView):

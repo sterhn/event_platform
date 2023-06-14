@@ -9,13 +9,13 @@ from rest_framework.response import Response
 
 from .models import Event, EventAttender
 from .serializers import EventSerializer, EventAttenderSerializer
-from .permissions import IsAdminOrReadOnly, IsEventPlanner
+from .permissions import IsEventPlannerOrReadOnly
 
 
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [IsAdminOrReadOnly, IsEventPlanner]
+    permission_classes = [IsEventPlannerOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['date', 'start_time']
     search_fields = ['name', 'type']

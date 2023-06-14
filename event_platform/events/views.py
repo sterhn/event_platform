@@ -25,19 +25,3 @@ class RegisterForEventView(viewsets.ModelViewSet):
     queryset = EventAttender.objects.all()
     serializer_class = EventAttenderSerializer
 
-class EventUpdateView(View):
-    def get(self, request, pk):
-        event = get_object_or_404(Event, pk=pk)
-        context = {'event': event}
-        return render(request, 'event_edit.html', context)
-
-    def post(self, request, pk):
-        event = get_object_or_404(Event, pk=pk)
-        event.name = request.POST.get('name')
-        event.type = request.POST.get('type')
-        event.date = request.POST.get('date')
-        event.start_time = request.POST.get('start_time')
-        event.save()
-        # Redirect to a success page or do any other necessary processing
-        context = {'event': event}
-        return render(request, 'event_edit.html', context)

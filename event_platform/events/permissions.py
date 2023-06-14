@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from users.models import UserProfile
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
@@ -10,5 +11,11 @@ class IsAdminOrReadOnly(permissions.BasePermission):
     
 class IsEventPlanner(permissions.BasePermission):
     def has_permission(self, request, view):
-        # Check if the user has the "event_planner" role
-        return request.user.profile.role == 'event_planner'
+        user = request.user
+        user_profile = UserProfile.objects.get(user=user)
+
+        if user.is_authenticated and user_profile.role == 'event_planner':
+            return True
+        else:
+            print(user_profile.role)
+            return False

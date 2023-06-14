@@ -29,15 +29,18 @@ class RegisterView(APIView):
 
         user = User.objects.create_user(username=username, password=password)
         token, _ = Token.objects.get_or_create(user=user)
+
+        # Create UserProfile and associate it with the User
         user_profile = UserProfile.objects.create(user=user, role=role)
-
-        user.save()
+        user_profile.name = user.username
+        user_profile.save()
         token.save()
-
-        return Response({'token': token.key}, status=status.HTTP_201_CREATED)
+        return Response({'token': token.key, 'role': user.profile.role}, status=status.HTTP_201_CREATED)
 
 
 class LoginView(APIView):
+    def get(self, request):
+        return render(request, 'login.html')
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
@@ -55,3 +58,5 @@ class LoginView(APIView):
         token = Token.objects.get(user=user)
 
         return Response({'token': token.key}, status=status.HTTP_200_OK)
+    
+ 

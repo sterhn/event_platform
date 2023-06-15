@@ -1,4 +1,5 @@
 from rest_framework import permissions
+from rest_framework.exceptions import PermissionDenied
 from users.models import UserProfile
 
 class IsEventPlannerOrReadOnly(permissions.BasePermission):
@@ -17,7 +18,7 @@ class IsEventPlannerOrReadOnly(permissions.BasePermission):
                 # Allow edit requests only for event planners
                 return True
         except UserProfile.DoesNotExist:
-            pass
+             raise PermissionDenied('User profile does\'t exist')
 
         # Deny all other requests
         return False

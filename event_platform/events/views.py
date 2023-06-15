@@ -24,4 +24,9 @@ class EventViewSet(viewsets.ModelViewSet):
 class RegisterForEventView(viewsets.ModelViewSet):
     queryset = EventAttender.objects.all()
     serializer_class = EventAttenderSerializer
+    permission_classes = [permissions.IsAuthenticated] 
 
+    def perform_create(self, serializer):
+        user = self.request.user  # Get the authenticated user
+        event = serializer.validated_data.get('event')
+        EventAttender.objects.create(user=user, event=event)
